@@ -40,4 +40,21 @@ function selezionaMostroCasuale() {
   }
   
   while (giocatore.vita > 0 && mostro.vita > 0)  
-  
+  // Gestione del turno del giocatore
+  console.log(`\n--- Nuovo Turno ---\nTurno di ${giocatore.nome} (Vita: ${giocatore.vita})\nMostro ${mostro.nome} (Vita: ${mostro.vita})`);
+  let azioneGiocatore = prompt("Scegli azione: 1) Attacca, 2) Cura, 3) Fuggi", "1");
+
+  switch (azioneGiocatore) {
+    case "1": gestisciAttacco(giocatore, mostro); break;
+    case "2": giocatore.cura(); break;
+    case "3": 
+      if (Math.random() < mostro.probabilitaFuga) {
+        console.log(`${giocatore.nome} fugge dalla battaglia!`);
+        mostro.vita = 0;
+      } else {
+        console.log(`${giocatore.nome} tenta di fuggire ma fallisce!`);
+      }
+      break;
+    default: console.log("Azione non valida, perdi il turno!");
+  }
+
