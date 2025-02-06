@@ -39,28 +39,29 @@ function gestisciAttacco(attaccante, difensore) {
     console.log(`${attaccante.nome} attacca ${difensore.nome} e infligge ${danno} danni.`);
 }
 
-while (giocatore.vita > 0 && mostro.vita > 0)
+while (giocatore.vita > 0 && mostro.vita > 0) {
     // Gestione del turno del giocatore
     console.log(`\n--- Nuovo Turno ---\nTurno di ${giocatore.nome} (Vita: ${giocatore.vita})\nMostro ${mostro.nome} (Vita: ${mostro.vita})`);
-let azioneGiocatore = prompt("Scegli azione: 1) Attacca, 2) Cura, 3) Fuggi", "1");
+    let azioneGiocatore = prompt("Scegli azione: 1) Attacca, 2) Cura, 3) Fuggi", "1");
 
-switch (azioneGiocatore) {
-    case "1": gestisciAttacco(giocatore, mostro); break;
-    case "2": giocatore.cura(); break;
-    case "3":
-        if (Math.random() < mostro.probabilitaFuga) {
-            console.log(`${giocatore.nome} fugge dalla battaglia!`);
-            mostro.vita = 0;
-        } else {
-            console.log(`${giocatore.nome} tenta di fuggire ma fallisce!`);
-        }
-        break;
-    default: console.log("Azione non valida, perdi il turno!");
-}
-// Gestione del turno del mostro
-if (mostro.vita > 0) {
-    console.log("\nTurno del mostro!");
-    gestisciAttacco(mostro, giocatore);
+    switch (azioneGiocatore) {
+        case "1": gestisciAttacco(giocatore, mostro); break;
+        case "2": giocatore.cura(); break;
+        case "3":
+            if (Math.random() < mostro.probabilitaFuga) {
+                console.log(`${giocatore.nome} fugge dalla battaglia!`);
+                mostro.vita = 0;
+            } else {
+                console.log(`${giocatore.nome} tenta di fuggire ma fallisce!`);
+            }
+            break;
+        default: console.log("Azione non valida, perdi il turno!");
+    }
+    // Gestione del turno del mostro
+    if (mostro.vita > 0) {
+        console.log("\nTurno del mostro!");
+        gestisciAttacco(mostro, giocatore);
+    }
 }
 // Fine del gioco
 console.log(giocatore.vita > 0 ? `\n${giocatore.nome} ha vinto la battaglia contro ${mostro.nome}!` : `\n${giocatore.nome} è stato sconfitto da ${mostro.nome}!`);
