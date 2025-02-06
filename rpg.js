@@ -62,4 +62,5 @@ if (mostro.vita > 0) {
     console.log("\nTurno del mostro!");
     gestisciAttacco(mostro, giocatore);
 }
-
+// Fine del gioco
+console.log(giocatore.vita > 0 ? `\n${giocatore.nome} ha vinto la battaglia contro ${mostro.nome}!` : `\n${giocatore.nome} è stato sconfitto da ${mostro.nome}!`);
