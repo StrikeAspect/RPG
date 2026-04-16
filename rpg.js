@@ -1,67 +1,215 @@
-// Creazione del personaggio (nome scelto dall’utente, vita = 100, attacco e difesa)
-function creaPersonaggio(nome) {
+const HEAL_AMOUNT = 20;
+const MAX_HEALS = 3;
+const MONSTERS = [
+    { nome: "Goblin", vita: 50, attacco: 8, difesa: 2, probabilitaFuga: 0.8 },
+    { nome: "Orco", vita: 80, attacco: 12, difesa: 5, probabilitaFuga: 0.5 },
+    { nome: "Drago", vita: 150, attacco: 20, difesa: 10, probabilitaFuga: 0.1 }
+];
+
+const elements = {
+    playerName: document.getElementById("player-name"),
+    playerHealth: document.getElementById("player-health"),
+    playerAttack: document.getElementById("player-attack"),
+    playerDefense: document.getElementById("player-defense"),
+    playerHeals: document.getElementById("player-heals"),
+    monsterName: document.getElementById("monster-name"),
+    monsterHealth: document.getElementById("monster-health"),
+    monsterAttack: document.getElementById("monster-attack"),
+    monsterDefense: document.getElementById("monster-defense"),
+    monsterEscape: document.getElementById("monster-escape"),
+    log: document.getElementById("log"),
+    attackButton: document.getElementById("attack-btn"),
+    healButton: document.getElementById("heal-btn"),
+    fleeButton: document.getElementById("flee-btn"),
+    newGameButton: document.getElementById("new-game-btn")
+};
+
+let player = null;
+let monster = null;
+let battleActive = false;
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createPlayer(name) {
     return {
-        nome: nome,
+        nome: name,
         vita: 100,
-        attacco: Math.floor(Math.random() * 11) + 5, // Random attacco tra 5 e 15
-        difesa: Math.floor(Math.random() * 6) + 3, // Random difesa tra 3 e 8
-        conteggioCure: 3,
-        cura: function () {
-            if (this.conteggioCure > 0) {
-                this.vita += 20;
-                this.conteggioCure--;
-                console.log(this.nome + " si cura di 20 punti vita. Rimangono " + this.conteggioCure + " cure.");
-            } else {
-                console.log(this.nome + " non può più curarsi!");
-            }
-        }
+        attacco: randomInt(5, 15),
+        difesa: randomInt(3, 8),
+        cureRimaste: MAX_HEALS
     };
 }
-// Selezione randomica di mostri
-function selezionaMostroCasuale() {
-    const mostri = [
-        { nome: "Goblin", vita: 50, attacco: 8, difesa: 2, probabilitaFuga: 0.8 },
-        { nome: "Orco", vita: 80, attacco: 12, difesa: 5, probabilitaFuga: 0.5 },
-        { nome: "Drago", vita: 150, attacco: 20, difesa: 10, probabilitaFuga: 0.1 }
-    ];
-    return mostri[Math.floor(Math.random() * mostri.length)];
+
+function createMonster() {
+    const baseMonster = MONSTERS[randomInt(0, MONSTERS.length - 1)];
+    return {
+        ...baseMonster
+    };
 }
 
-let giocatore = creaPersonaggio(prompt("Inserisci il nome del tuo personaggio:"));
-console.log(`Benvenuto ${giocatore.nome}!\nVita: ${giocatore.vita}\nAttacco: ${giocatore.attacco}\nDifesa: ${giocatore.difesa}`);
-
-let mostro = selezionaMostroCasuale();
-console.log(`\nUn mostro selvatico appare!\nNome mostro: ${mostro.nome}\nVita mostro: ${mostro.vita}\nAttacco mostro: ${mostro.attacco}\nDifesa mostro: ${mostro.difesa}`);
-
-function gestisciAttacco(attaccante, difensore) {
-    let danno = Math.max(attaccante.attacco - difensore.difesa, 0);
-    difensore.vita -= danno;
-    console.log(`${attaccante.nome} attacca ${difensore.nome} e infligge ${danno} danni.`);
+function calculateDamage(attacker, defender) {
+    return Math.max(attacker.attacco - defender.difesa, 0);
 }
 
-while (giocatore.vita > 0 && mostro.vita > 0) {
-    // Gestione del turno del giocatore
-    console.log(`\n--- Nuovo Turno ---\nTurno di ${giocatore.nome} (Vita: ${giocatore.vita})\nMostro ${mostro.nome} (Vita: ${mostro.vita})`);
-    let azioneGiocatore = prompt("Scegli azione: 1) Attacca, 2) Cura, 3) Fuggi", "1");
+function describeCharacter(character) {
+    return `${character.nome} — Vita: ${character.vita}, Attacco: ${character.attacco}, Difesa: ${character.difesa}`;
+}
 
-    switch (azioneGiocatore) {
-        case "1": gestisciAttacco(giocatore, mostro); break;
-        case "2": giocatore.cura(); break;
-        case "3":
-            if (Math.random() < mostro.probabilitaFuga) {
-                console.log(`${giocatore.nome} fugge dalla battaglia!`);
-                mostro.vita = 0;
-            } else {
-                console.log(`${giocatore.nome} tenta di fuggire ma fallisce!`);
-            }
-            break;
-        default: console.log("Azione non valida, perdi il turno!");
+function logCharactersToConsole() {
+    console.group("Personaggi del gioco");
+    console.log(`Eroe: ${describeCharacter(player)}`);
+    console.group("Mostri disponibili");
+    MONSTERS.forEach((monsterData) => {
+        console.log(describeCharacter(monsterData) + `, Probabilità fuga: ${Math.round(monsterData.probabilitaFuga * 100)}%`);
+    });
+    console.groupEnd();
+    console.groupEnd();
+}
+
+function logLine(message) {
+    const line = document.createElement("p");
+    line.className = "log-line";
+    line.textContent = message;
+    elements.log.appendChild(line);
+    elements.log.scrollTop = elements.log.scrollHeight;
+}
+
+function updatePanels() {
+    if (!player || !monster) {
+        return;
     }
-    // Gestione del turno del mostro
-    if (mostro.vita > 0) {
-        console.log("\nTurno del mostro!");
-        gestisciAttacco(mostro, giocatore);
+
+    elements.playerName.textContent = `Nome: ${player.nome}`;
+    elements.playerHealth.textContent = `Vita: ${Math.max(player.vita, 0)} / 100`;
+    elements.playerAttack.textContent = `Attacco: ${player.attacco}`;
+    elements.playerDefense.textContent = `Difesa: ${player.difesa}`;
+    elements.playerHeals.textContent = `Cure rimaste: ${player.cureRimaste}`;
+
+    elements.monsterName.textContent = `Nome: ${monster.nome}`;
+    elements.monsterHealth.textContent = `Vita: ${Math.max(monster.vita, 0)}`;
+    elements.monsterAttack.textContent = `Attacco: ${monster.attacco}`;
+    elements.monsterDefense.textContent = `Difesa: ${monster.difesa}`;
+    elements.monsterEscape.textContent = `Probabilità fuga: ${Math.round(monster.probabilitaFuga * 100)}%`;
+}
+
+function setActionsEnabled(enabled) {
+    elements.attackButton.disabled = !enabled;
+    elements.healButton.disabled = !enabled;
+    elements.fleeButton.disabled = !enabled;
+}
+
+function endBattle(message) {
+    logLine(message);
+    battleActive = false;
+    setActionsEnabled(false);
+}
+
+function performMonsterTurn() {
+    if (monster.vita <= 0 || player.vita <= 0) {
+        return;
+    }
+
+    logLine(`Il ${monster.nome} attacca ${player.nome}!`);
+    const damage = calculateDamage(monster, player);
+    if (damage === 0) {
+        logLine(`${player.nome} blocca l'attacco!`);
+    } else {
+        player.vita -= damage;
+        logLine(`${player.nome} subisce ${damage} danni.`);
+    }
+
+    updatePanels();
+
+    if (player.vita <= 0) {
+        endBattle(`${player.nome} è stato sconfitto da ${monster.nome}!`);
     }
 }
-// Fine del gioco
-console.log(giocatore.vita > 0 ? `\n${giocatore.nome} ha vinto la battaglia contro ${mostro.nome}!` : `\n${giocatore.nome} è stato sconfitto da ${mostro.nome}!`);
+
+function playerAttack() {
+    if (!battleActive) {
+        return;
+    }
+
+    logLine(`${player.nome} attacca ${monster.nome}!`);
+    const damage = calculateDamage(player, monster);
+    if (damage === 0) {
+        logLine(`${monster.nome} ha bloccato l'attacco!`);
+    } else {
+        monster.vita -= damage;
+        logLine(`${monster.nome} subisce ${damage} danni.`);
+    }
+
+    updatePanels();
+
+    if (monster.vita <= 0) {
+        endBattle(`${player.nome} ha sconfitto ${monster.nome}!`);
+        return;
+    }
+
+    performMonsterTurn();
+}
+
+function playerHeal() {
+    if (!battleActive) {
+        return;
+    }
+
+    if (player.cureRimaste <= 0) {
+        logLine(`${player.nome} non ha più cure disponibili.`);
+        performMonsterTurn();
+        return;
+    }
+
+    player.vita = Math.min(player.vita + HEAL_AMOUNT, 100);
+    player.cureRimaste -= 1;
+    logLine(`${player.nome} recupera ${HEAL_AMOUNT} vita.`);
+    updatePanels();
+    performMonsterTurn();
+}
+
+function playerFlee() {
+    if (!battleActive) {
+        return;
+    }
+
+    const chance = Math.random();
+    if (chance < monster.probabilitaFuga) {
+        endBattle(`${player.nome} è fuggito con successo da ${monster.nome}!`);
+        return;
+    }
+
+    logLine(`${player.nome} tenta di fuggire ma fallisce!`);
+    performMonsterTurn();
+}
+
+function startNewBattle() {
+    const name = prompt("Inserisci il nome del tuo personaggio:", "Eroe");
+    const heroName = name && name.trim() ? name.trim() : "Eroe Coraggioso";
+
+    player = createPlayer(heroName);
+    monster = createMonster();
+    battleActive = true;
+    elements.log.textContent = "";
+
+    logCharactersToConsole();
+    logLine(`Benvenuto ${player.nome}!`);
+    logLine(`Un ${monster.nome} selvatico appare!`);
+    updatePanels();
+    setActionsEnabled(true);
+}
+
+function bindEvents() {
+    elements.attackButton.addEventListener("click", playerAttack);
+    elements.healButton.addEventListener("click", playerHeal);
+    elements.fleeButton.addEventListener("click", playerFlee);
+    elements.newGameButton.addEventListener("click", startNewBattle);
+}
+
+function initializeGame() {
+    bindEvents();
+    startNewBattle();
+}
+
+initializeGame();
