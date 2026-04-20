@@ -1,7 +1,12 @@
-# RPG Battle Arena
+<div align="center">
+  <img src="assets/rpg.png" alt="Meme Generator RF" width="80" height="80">
+</div><h3 align="center">RPG Battle Arena</h3>
 
-> Un gioco RPG a turni in JavaScript, progettato per mostrare una battaglia tra un eroe personalizzato e mostri casuali.
-
+<p align="center">
+  Un gioco RPG a turni in JavaScript, progettato per mostrare una battaglia tra un eroe personalizzato e mostri casuali.
+  <br />
+  <a href="https://github.com/StrikeAspect/RPG"><strong>Esplora la documentazione »</strong></a>
+  <br />
   <p align="center">
     <a href="https://strikeaspect.github.io/RPG/" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background-color: #2342cc; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">Live Preview</a>
   </p>
