@@ -2,22 +2,37 @@
 
 > Un gioco RPG a turni in JavaScript, progettato per mostrare una battaglia tra un eroe personalizzato e mostri casuali.
 
-## Sommario
-
-- [RPG Battle Arena](#rpg-battle-arena)
-  - [Sommario](#sommario)
-  - [Descrizione del progetto](#descrizione-del-progetto)
-  - [Struttura del repository](#struttura-del-repository)
-  - [Tecnologie](#tecnologie)
-  - [Funzione del gioco](#funzione-del-gioco)
-  - [Caratteristiche](#caratteristiche)
-  - [Requisiti](#requisiti)
-  - [Installazione](#installazione)
-  - [Come giocare](#come-giocare)
-  - [Meccaniche di gioco](#meccaniche-di-gioco)
-  - [Personaggi](#personaggi)
-    - [Eroe](#eroe)
-    - [Mostri](#mostri)
+  <p align="center">
+    <a href="https://strikeaspect.github.io/RPG/" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background-color: #2342cc; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">Live Preview</a>
+  </p>
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Sommario</summary>
+  <ol>
+    <li>
+      <a href="#rpg-battle-arena">RPG Battle Arena</a>
+      <ul>
+        <li><a href="#sommario">Sommario</a></li>
+        <li><a href="#descrizione-del-progetto">Descrizione del progetto</a></li>
+        <li><a href="#struttura-del-repository">Struttura del repository</a></li>
+        <li><a href="#tecnologie">Tecnologie</a></li>
+        <li><a href="#funzione-del-gioco">Funzione del gioco</a></li>
+        <li><a href="#caratteristiche">Caratteristiche</a></li>
+        <li><a href="#requisiti">Requisiti</a></li>
+        <li><a href="#installazione">Installazione</a></li>
+        <li><a href="#come-giocare">Come giocare</a></li>
+        <li><a href="#meccaniche-di-gioco">Meccaniche di gioco</a></li>
+        <li>
+          <a href="#personaggi">Personaggi</a>
+          <ul>
+            <li><a href="#eroe">Eroe</a></li>
+            <li><a href="#mostri">Mostri</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ol>
+</details>
 
 ## Descrizione del progetto
 
